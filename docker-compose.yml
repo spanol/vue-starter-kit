@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: lavue-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: lavue_user
+      POSTGRES_PASSWORD: lavue_pass
+      POSTGRES_DB: lavue_db
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
