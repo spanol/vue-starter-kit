@@ -14,18 +14,21 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+    $boards = $user->boards()->get();
 
-Route::get('board', function () {
+    return Inertia::render('Dashboard', [
+        'boards' => $boards,
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('board/{id}', function ($id) {
     // pega a board com ID 1
-    $board = Board::find(1);
+    $board = Board::find($id);
 
     if (!$board) {
-        return 'Board não encontrada';
+        abort(404, 'Board não encontrada');
     }
 
     $columns = $board->columns()->with('cards')->get();
@@ -36,10 +39,9 @@ Route::get('board', function () {
     ]);
 })
     ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+    ->name('board.show');
 
 Route::post('/cards', function (Request $request) {
-    // <- injeta o objeto
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'column_id' => 'required|exists:columns,id',
@@ -59,7 +61,6 @@ Route::post('/cards', function (Request $request) {
     ->name('cards.store');
 
 Route::post('/columns', function (Request $request) {
-    // <- injeta o objeto
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'board_id' => 'required|exists:boards,id',
@@ -75,6 +76,18 @@ Route::post('/columns', function (Request $request) {
 })
     ->middleware(['auth', 'verified'])
     ->name('columns.store');
+
+Route::post('/boards', function (Request $request) {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
+
+    $board = $request->user()->boards()->create($validated);
+
+    return redirect()->route('board.show', $board->id); 
+})
+    ->middleware(['auth', 'verified'])
+    ->name('boards.create');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

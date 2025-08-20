@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [{
     href: '/board',
 },];
 
-const props = defineProps<{
+defineProps<{
     board: {
         id: number,
         name: string
@@ -30,21 +30,17 @@ const props = defineProps<{
         }>,
     }>,
 }>();
-
-
-console.log('Board columns:', props.columns);
-console.log('Board title:', props.board);
 </script>
 
 <template>
 
-    <Head :title="props.board.name + ' - Board'" />
+    <Head :title="board.name + ' - Board'" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
             <div class="overflow-x-auto h-full p-4 flex justify-between">
-                <Column v-for="col of props.columns" :key="col.id" :col="col" />
-                <AddColumnDialog :boardId="props.board.id" />
+                <Column v-for="col of columns" :key="col.id" :col="col" />
+                <AddColumnDialog :boardId="board.id" />
             </div>
         </div>
     </AppLayout>

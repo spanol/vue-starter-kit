@@ -21,13 +21,13 @@ defineProps<{
 </script>
 
 <template>
-    <div class="min-w-[250px] min-h-[120px] flex flex-col m-2 mt-0 rounded-xl border border-sidebar-border/70 bg-sidebar"
+    <div class="min-w-[250px] max-w-[250px] min-h-[120px] flex flex-col m-2 mt-0 rounded-xl border border-sidebar-border/70 bg-sidebar"
         :key="col.id">
         <p class="p-4 pb-0 text-lg font-semibold text-sidebar-text">
             {{ col.title }}
         </p>
 
-        <div v-if="col.cards.length > 0" class="overflow-y-auto max-h-[300px] p-2 space-y-2">
+        <div v-if="col.cards.length > 0" class="overflow-y-auto p-2 space-y-2 max-h-[calc(100vh-200px)]">
             <CoulumnCard v-for="card of col.cards" :key="card.id" :card="card" />
         </div>
 
