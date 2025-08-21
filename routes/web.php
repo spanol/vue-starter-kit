@@ -21,7 +21,9 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', [
         'boards' => $boards,
     ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+})
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::get('board/{id}', function ($id) {
     // pega a board com ID 1
@@ -84,10 +86,15 @@ Route::post('/boards', function (Request $request) {
 
     $board = $request->user()->boards()->create($validated);
 
-    return redirect()->route('board.show', $board->id); 
+    return redirect()->route('board.show', $board->id);
 })
     ->middleware(['auth', 'verified'])
     ->name('boards.create');
+
+Route::get('/api/user/{id}/boards', function ($id) {
+    $boards = Board::where('user_id', $id)->get();
+    return response()->json($boards);
+})->middleware(['auth']);
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
